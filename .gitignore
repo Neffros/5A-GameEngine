@@ -1,3 +1,11 @@
+#remove builds
+cmake-build-debug
+cmake-build-release
+
+#remove IDE cache
+.idea
+.vs
+
 # Prerequisites
 *.d
 
