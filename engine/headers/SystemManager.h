@@ -13,7 +13,7 @@ namespace GameEngine {
     public:
         template<typename T>
         void registerSystem(ComponentSignature signature, System<T>);
-        template<class T>
+        template<typename T>
         void registerSystem(RTTI<T> rtti, ComponentSignature signature);
     };
 }
