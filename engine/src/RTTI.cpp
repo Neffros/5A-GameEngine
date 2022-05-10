@@ -3,7 +3,7 @@
 using namespace GameEngine;
 
 template <class Base>
-RTTI<Base>::RTTI<Base>(const char* type, const RTTI<Base>& parent): _parent(parent), _type(type) { }
+RTTI<Base>::RTTI(const char* type, const RTTI<Base>& parent): _parent(parent), _type(type) { }
 
 template <class Base>
 bool RTTI<Base>::IsExactlyA(const RTTI<Base>& other) const
