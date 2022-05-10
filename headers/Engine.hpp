@@ -3,6 +3,7 @@
 #include "../headers/ComponentManager.hpp"
 #include "../headers/EntityManager.h"
 #include "../headers/SystemManager.hpp"
+#include "Clock.h"
 
 namespace GameEngine {
     class Engine
@@ -10,10 +11,13 @@ namespace GameEngine {
     private:
         std::unique_ptr<ComponentManager> _componentManager;
         double _frameRate;
+        double _frameDuration;
+        double _maxDelta;
         std::unique_ptr<EntityManager> _entityManager;
         std::unique_ptr<SystemManager> _systemManager;
+        Clock _clock;
     public:
-        Engine();
+        explicit Engine(double frameRate);
 
         template <typename TComponent>
         void addComponent(const EntityId& id, TComponent component)
