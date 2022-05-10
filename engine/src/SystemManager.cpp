@@ -2,14 +2,14 @@
 
 using namespace GameEngine;
 
-template<class T>
-void SystemManager<T>::registerSystem(ComponentSignature signature) {
+template<typename T>
+void SystemManager::registerSystem(ComponentSignature signature, System<T>) {
     auto system = std::make_unique<System<T>>();
     _systems.push_back(system);
     _signatureToSystems.emplace({signature, system});
 }
 
 template<class T>
-void SystemManager<T>::registerSystem(RTTI<T> rtti, ComponentSignature signature) {
+void SystemManager::registerSystem(RTTI<T> rtti, ComponentSignature signature) {
 
 }

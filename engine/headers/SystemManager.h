@@ -6,13 +6,14 @@
 #include "RTTI.h"
 
 namespace GameEngine {
-    template<class T>
     class SystemManager {
     private:
-        std::map<ComponentSignature, std::unique_ptr<System<T>>> _signatureToSystems;
-        std::vector<std::unique_ptr<System<T>>> _systems;
+        std::map<ComponentSignature, std::unique_ptr<ISystem>> _signatureToSystems;
+        std::vector<std::unique_ptr<ISystem>> _systems;
     public:
-        void registerSystem(ComponentSignature signature);
+        template<typename T>
+        void registerSystem(ComponentSignature signature, System<T>);
+        template<class T>
         void registerSystem(RTTI<T> rtti, ComponentSignature signature);
     };
 }
