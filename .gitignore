@@ -1,6 +1,7 @@
 #remove builds
 cmake-build-debug
 cmake-build-release
+out
 
 #remove IDE cache
 .idea
