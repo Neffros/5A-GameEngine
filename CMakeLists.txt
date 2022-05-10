@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.20)
 
 project("game"
     DESCRIPTION "Game with ECS Engine"
@@ -20,4 +20,4 @@ add_executable(${PROJECT_NAME}
     "headers/Engine.hpp"
     "headers/System.hpp"
     "headers/SystemManager.hpp"
-        headers/Clock.h)
+        headers/Clock.h headers/ThreadPool.h src/ThreadPool.cpp)

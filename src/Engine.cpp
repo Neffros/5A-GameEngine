@@ -12,6 +12,7 @@ Engine::Engine(double frameRate) : _frameRate(frameRate), _clock(Clock()),
     this->_componentManager = std::make_unique<ComponentManager>();
     this->_entityManager = std::make_unique<EntityManager>();
     this->_systemManager = std::make_unique<SystemManager>();
+    _threadPool.Start();
 }
 
 EntityId Engine::createEntity() {
@@ -46,4 +47,8 @@ void Engine::tick() {
 
         --loops;
     }
+}
+
+void Engine::stop() {
+    _threadPool.Stop();
 }

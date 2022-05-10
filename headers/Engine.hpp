@@ -4,6 +4,7 @@
 #include "../headers/EntityManager.h"
 #include "../headers/SystemManager.hpp"
 #include "Clock.h"
+#include "ThreadPool.h"
 
 namespace GameEngine {
     class Engine
@@ -16,6 +17,7 @@ namespace GameEngine {
         std::unique_ptr<EntityManager> _entityManager;
         std::unique_ptr<SystemManager> _systemManager;
         Clock _clock;
+        ThreadPool _threadPool;
     public:
         explicit Engine(double frameRate);
 
@@ -54,5 +56,7 @@ namespace GameEngine {
         }
 
         void tick();
+
+        void stop();
     };
 }

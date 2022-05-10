@@ -14,7 +14,9 @@ namespace GameEngine
     public:
         void run(const std::set<EntityId>& entities) const override
         {
+            for(auto entity : entities){
 
+            }
         }
     };
 }
