@@ -1,13 +1,12 @@
 #pragma once
 
+#include <array>
 #include <queue>
+
+#include "../headers/global.h"
 
 namespace GameEngine
 {
-    using EntityId = std::uint32_t;
-    
-    constexpr EntityId MAX_ENTITIES = 5000;
-
     class EntityManager
     {
     private:

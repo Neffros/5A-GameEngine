@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EntityManager.h"
+#include "../headers/global.h"
 
 namespace GameEngine
 {

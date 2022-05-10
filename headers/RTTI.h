@@ -22,11 +22,11 @@ namespace GameEngine
 	};
 
 #define RTTI_DECLARATION(Base) \
-	static RTTI<Base> rtti;
+	static RTTI<Base> Type;
 #define RTTI_DEFINITION(Base, Parent) \
 	RTTI<DefaultRTTI> RTTI<Base>::Default("", RTTI<Base>::Default); \
-	RTTI<Base> Base::rtti("#Base", Parent::rtti);
+	RTTI<Base> Base::Type("#Base", Parent::rtti);
 #define RTTI_DEFINITION_BASE(Base) \
 	RTTI<DefaultRTTI> RTTI<Base>::Default("", RTTI<Base>::Default); \
-	RTTI<Base> Base::rtti("#Base", RTTI<Base>::Default);
+	RTTI<Base> Base::Type("#Base", RTTI<Base>::Default);
 }

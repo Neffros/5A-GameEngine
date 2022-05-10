@@ -9,16 +9,16 @@
 namespace GameEngine
 {
 	// TODO: Potentiellement remplacer par une classe de collection utilisant un pool d'allocation
-	template <typename T>
+	template <typename TComponent>
 	class ComponentCollection : public IComponentCollection
 	{
 	private:
-		std::array<T, MAX_ENTITIES> _componentLookup;
+		std::array<TComponent, MAX_ENTITIES> _componentLookup;
 		size_t _currentIndex;
 		std::unordered_map<EntityId, size_t> _entityToIndexLookup;
 		std::unordered_map<size_t, EntityId> _indexToEntityLookup;
 	public:
-		void addData(EntityId id, T data)
+		void addData(EntityId id, TComponent data)
 		{
 			this->_entityToIndexLookup[id] = this->_currentIndex;
 			this->_indexToEntityLookup[this->_currentIndex] = id;
@@ -26,7 +26,7 @@ namespace GameEngine
 			++this->_currentIndex;
 		}
 
-		T& getData(EntityId id) const
+		TComponent& getData(EntityId id) const
 		{
 			return this->_componentLookup[this->_entityToIndexLookup[id]];
 		}
