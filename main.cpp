@@ -31,5 +31,6 @@ int main()
         startTime = currentTime;
     }
 
+    engine.stop();
 	//std::cout << entity << " ; " << entity2 << std::endl;
 }
