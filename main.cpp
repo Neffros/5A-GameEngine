@@ -1,5 +1,6 @@
-#include <iostream>
 #include <chrono>
+#include <iostream>
+#include "windows.h"
 #include "include/ECS.h"
 
 struct Transform
@@ -22,7 +23,12 @@ int main()
 	engine.addComponent(entity2, Transform{});
 
     double startTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
-    while(1){
+
+    bool loop = true;
+    while(loop){
+        if(GetKeyState('A') & 0x8000) {
+            loop = false;
+        }
         double currentTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
         if(currentTime - startTime < frameDuration) {
             continue;
@@ -32,5 +38,5 @@ int main()
     }
 
     engine.stop();
-	//std::cout << entity << " ; " << entity2 << std::endl;
+    return 0;
 }

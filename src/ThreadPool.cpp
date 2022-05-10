@@ -3,9 +3,12 @@
 using namespace GameEngine;
 
 int ThreadPool::QueueJob(const std::function<void()> &job) {
-    std::unique_lock<std::mutex> lock(_queueMutex);
-    _idToStatus[_lastJobId] = false;
-    _jobs.push(Job(_lastJobId, job));
+    {
+        std::unique_lock<std::mutex> lock(_queueMutex);
+        _idToStatus[_lastJobId] = false;
+        _jobs.push(Job(_lastJobId, job));
+    }
+    _mutexCondition.notify_one();
     return _lastJobId++;
 }
 
@@ -18,9 +21,10 @@ void ThreadPool::Start() {
 }
 
 void ThreadPool::Stop() {
-    std::unique_lock<std::mutex> lock(_queueMutex);
-    _shouldTerminate = true;
-
+    {
+        std::unique_lock<std::mutex> lock(_queueMutex);
+        _shouldTerminate = true;
+    }
     _mutexCondition.notify_all();
     for(std::thread& activeThread : _threads){
         activeThread.join();
