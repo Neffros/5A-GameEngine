@@ -51,6 +51,8 @@ int main()
     sf::Text fpsText;
     fpsText.setFont(font);
     fpsText.setFillColor(sf::Color::White);
+    int secondFrameCount = 0;
+    sf::Clock fpsClock;
     while(window.isOpen())
     {
         // on traite tous les évènements de la fenêtre qui ont été générés depuis la dernière itération de la boucle
@@ -70,7 +72,13 @@ int main()
 
         engine.tick();
         startTime = currentTime;
-        fpsText.setString("60");
+        sf::Time elapsed = fpsClock.getElapsedTime();
+        ++secondFrameCount;
+        if(elapsed.asSeconds() > 1){
+            fpsText.setString("FPS: " + std::to_string(secondFrameCount));
+            secondFrameCount = 0;
+            fpsClock.restart();
+        }
 
         window.draw(fpsText);
 
