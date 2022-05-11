@@ -12,10 +12,10 @@ struct Rigidbody
 
 class MoveSystem : public GameEngine::System<Transform, Rigidbody>
 {
-	virtual void behaviour(const GameEngine::EntityId& id, Transform& transform, Rigidbody& rigidbody) const override
+	void behaviour(const GameEngine::EntityId& id, Transform& transform, Rigidbody& rigidbody) const override
 	{
-		transform.position += 2;
-		std::cout << id << std::endl;
+		transform.position[0] += 2;
+        std::cout << "Entity id : " << id << " ; Transform component : " << transform.toString() << std::endl;
 	}
 };
 

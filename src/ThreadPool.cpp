@@ -1,8 +1,10 @@
+#include <iostream>
 #include "../headers/ThreadPool.h"
 
 using namespace GameEngine;
 
 int ThreadPool::QueueJob(const std::function<void()> &job) {
+    std::cerr << "Queued new job with id " << _lastJobId << std::endl;
     {
         std::unique_lock<std::mutex> lock(_queueMutex);
         _idToStatus[_lastJobId] = false;
@@ -13,6 +15,7 @@ int ThreadPool::QueueJob(const std::function<void()> &job) {
 }
 
 void ThreadPool::Start() {
+    _lastJobId = 0;
     const unsigned int nThreads = std::thread::hardware_concurrency();
     _threads.resize(nThreads);
     for (int i = 0; i < nThreads; ++i) {
@@ -52,5 +55,7 @@ void ThreadPool::ThreadLoop() {
 }
 
 void ThreadPool::WaitForJob(int jobId) {
-    while(!_idToStatus[jobId]);
+    while(!_idToStatus[jobId]) {
+        std::cerr << "Waiting for job " << jobId << std::endl;
+    };
 }
