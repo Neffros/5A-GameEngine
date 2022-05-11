@@ -23,4 +23,5 @@ add_executable(${PROJECT_NAME}
     "headers/Engine.hpp"
     "headers/System.hpp"
     "headers/SystemManager.hpp"
-)
+    "headers/Scene.h"
+        src/Scene.cpp)
