@@ -59,6 +59,12 @@ namespace GameEngine {
 			return this->_componentManager->getComponentId<TComponent>();
 		}
 
+		template <typename TComponent>
+		ComponentBlock<TComponent>& getComponents()
+		{
+			return this->_componentManager->getComponents<TComponent>();
+		}
+
         ThreadPool* getThreadPool();
 
 		template<typename TComponent>

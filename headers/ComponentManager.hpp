@@ -37,6 +37,12 @@ namespace GameEngine
 		{
 			return this->getCollection<TComponent>(this->getComponentId<TComponent>())->getData(id);
 		}
+		
+		template <typename TComponent>
+		ComponentBlock<TComponent>& getComponents()
+		{
+			return this->getCollection<TComponent>(this->getComponentId<TComponent>())->get();
+		}
 
 		void onEntityDestroyed(const EntityId& id, const ComponentSignature& signature);
 

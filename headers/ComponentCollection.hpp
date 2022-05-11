@@ -26,6 +26,11 @@ namespace GameEngine
 			++this->_currentIndex;
 		}
 
+		ComponentBlock<TComponent>& get()
+		{
+			return this->_componentLookup;
+		}
+
 		TComponent& getData(EntityId id)
 		{
 			return this->_componentLookup[this->_entityToIndexLookup[id]];
