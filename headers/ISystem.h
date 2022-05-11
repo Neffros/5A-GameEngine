@@ -2,12 +2,13 @@
 
 #include <set>
 
-#include "../headers/EntityManager.h"
+#include "ComponentManager.hpp"
+#include "global.h"
 
 namespace GameEngine
 {
-    class ISystem
+    struct ISystem
     {
-        virtual void run(const std::set<EntityId>& entities/*, besoin des pack de tableaux de composants correspondant au pack de types fourni - dans le même ordre */) const = 0;
+        virtual void run(const ComponentManager* componentManager, const std::set<EntityId>& entities) const = 0;
     };
 }

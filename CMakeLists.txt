@@ -14,10 +14,11 @@ add_executable(${PROJECT_NAME}
     "src/ComponentManager.cpp"
     "src/Engine.cpp"
     "src/EntityManager.cpp"
+    "src/SystemManager.cpp"
     
     "headers/ComponentCollection.hpp"
     "headers/ComponentManager.hpp"
     "headers/Engine.hpp"
     "headers/System.hpp"
     "headers/SystemManager.hpp"
-)
+ )

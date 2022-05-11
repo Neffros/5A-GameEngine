@@ -16,12 +16,14 @@ EntityId Engine::createEntity()
 
 void Engine::destroyEntity(const EntityId& id)
 {
+    const ComponentSignature& signature = this->_entityManager->getSignature(id);
+
+    this->_componentManager->onEntityDestroyed(id, signature);
     this->_entityManager->destroyEntity(id);
-    this->_componentManager->onEntityDestroyed(id);
+    this->_systemManager->onEntityDestroyed(id, signature);
 }
 
 void Engine::tick()
 {
-
+    this->_systemManager->run(this->_componentManager.get());
 }
-
