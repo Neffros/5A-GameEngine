@@ -1,28 +1,49 @@
 #pragma once
 
+#include <map>
+#include <memory>
 #include <set>
-#include <unordered_map>
 
 #include "global.h"
 #include "ISystem.h"
-#include "System.hpp"
 
 namespace GameEngine
 {
+    class Engine;
+
+    struct SignatureGroup
+    {
+        std::set<EntityId> entities;
+        std::vector<std::shared_ptr<ISystem>> systems;
+    };
+
     class SystemManager
     {
     private:
-        std::unordered_map<ComponentSignature, std::set<EntityId>> _signatureToEntities;
-        std::unordered_map<ComponentSignature, std::unique_ptr<ISystem>> _signatureToSystems;
-        std::vector<std::unique_ptr<ISystem>> _systems;
+        std::map<ComponentSignature, SignatureGroup, SignatureComparer> _signatureToGroup;
     public:
+        void onComponentAddedToEntity(const EntityId& id, const ComponentSignature& oldSignature, const ComponentSignature& newSignature);
+
+        void onComponentRemovedToEntity(const EntityId& id, const ComponentSignature& oldSignature, const ComponentSignature& newSignature);
+
+        void onEntityDestroyed(const EntityId& id, const ComponentSignature& signature);
+
         template<typename TSystem>
         void registerSystem(ComponentSignature signature)
         {
-            const std::unique_ptr<TSystem>& system = std::make_unique<TSystem>();
+            std::shared_ptr<ISystem> system = std::make_shared<TSystem>();
 
-            this->_systems.push_back(system);
-            this->_signatureToSystems.emplace({ signature, system });
+            if (!this->_signatureToGroup.contains(signature))
+                this->_signatureToGroup.emplace(std::make_pair(signature, SignatureGroup{}));
+
+            this->push(signature, system);
+        }
+
+        void run(Engine* engine) const;
+    private:
+        void push(const ComponentSignature& signature, std::shared_ptr<ISystem> system)
+        {
+            this->_signatureToGroup[signature].systems.push_back(system);
         }
     };
 }

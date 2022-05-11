@@ -13,7 +13,7 @@ namespace GameEngine
 	class ComponentCollection : public IComponentCollection
 	{
 	private:
-		std::array<TComponent, MAX_ENTITIES> _componentLookup;
+		ComponentBlock<TComponent> _componentLookup;
 		size_t _currentIndex;
 		std::unordered_map<EntityId, size_t> _entityToIndexLookup;
 		std::unordered_map<size_t, EntityId> _indexToEntityLookup;
@@ -26,7 +26,7 @@ namespace GameEngine
 			++this->_currentIndex;
 		}
 
-		TComponent& getData(EntityId id) const
+		TComponent& getData(EntityId id)
 		{
 			return this->_componentLookup[this->_entityToIndexLookup[id]];
 		}

@@ -19,4 +19,15 @@ EntityId EntityManager::createEntity()
 void EntityManager::destroyEntity(const EntityId& id)
 {
     this->_availableEntities.push(id);
+    this->_entityToSignature[id].reset();
+}
+
+ComponentSignature EntityManager::getSignature(const EntityId& id) const
+{
+    return this->_entityToSignature[id];
+}
+
+void EntityManager::setSignature(const EntityId& id, ComponentSignature signature)
+{
+    this->_entityToSignature[id] = signature;
 }

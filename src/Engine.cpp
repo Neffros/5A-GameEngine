@@ -7,21 +7,24 @@ constexpr int MAX_LATE_FIXED_UPDATE_FRAME_COUNT = 2;
 
 using namespace GameEngine;
 
-Engine::Engine(double frameRate) : _frameRate(frameRate), _clock(Clock()),
-    _maxDelta(EXPECTED_MAX_DELTA / (frameRate / STANDARD_FRAMERATE)), _frameDuration(1.0 / frameRate) {
+Engine::Engine(double frameRate) : _clock(Clock()), _frameRate(frameRate), _frameDuration(1.0 / frameRate), _maxDelta(EXPECTED_MAX_DELTA / (frameRate / STANDARD_FRAMERATE)) {
     this->_componentManager = std::make_unique<ComponentManager>();
     this->_entityManager = std::make_unique<EntityManager>();
     this->_systemManager = std::make_unique<SystemManager>();
-    _threadPool.Start();
+    this->_threadPool.Start();
 }
 
 EntityId Engine::createEntity() {
     return this->_entityManager->createEntity();
 }
 
-void Engine::destroyEntity(const EntityId &id) {
+void Engine::destroyEntity(const EntityId& id)
+{
+    const ComponentSignature& signature = this->_entityManager->getSignature(id);
+
+    this->_componentManager->onEntityDestroyed(id, signature);
     this->_entityManager->destroyEntity(id);
-    this->_componentManager->onEntityDestroyed(id);
+    this->_systemManager->onEntityDestroyed(id, signature);
 }
 
 void Engine::tick() {
@@ -47,8 +50,11 @@ void Engine::tick() {
 
         --loops;
     }
+
+    this->_systemManager->run(this);
 }
 
-void Engine::stop() {
-    _threadPool.Stop();
+void Engine::stop()
+{
+    this->_threadPool.Stop();
 }

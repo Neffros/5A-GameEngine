@@ -14,10 +14,13 @@ add_executable(${PROJECT_NAME}
     "src/ComponentManager.cpp"
     "src/Engine.cpp"
     "src/EntityManager.cpp"
+    "src/SystemManager.cpp"
+    "src/ThreadPool.cpp"
+    "src/Transform.cpp"
     
     "headers/ComponentCollection.hpp"
     "headers/ComponentManager.hpp"
     "headers/Engine.hpp"
     "headers/System.hpp"
     "headers/SystemManager.hpp"
-        headers/Clock.h headers/ThreadPool.h src/ThreadPool.cpp)
+)
