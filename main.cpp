@@ -4,6 +4,7 @@
 
 #include "include/ECS.h"
 #include "headers/Transform.h"
+#include "headers/Scene.h"
 
 struct Rigidbody
 {
@@ -30,13 +31,16 @@ int main()
 	engine.registerComponent<Rigidbody>();
 	engine.registerSystem<MoveSystem>();
 
-	auto entity = engine.createEntity();
-	auto entity2 = engine.createEntity();
+	auto entity = engine.createEntity("test");
+	auto entity2 = engine.createEntity("another");
+    auto entity3 = engine.createEntity("test");
 
 	engine.addComponent(entity, Transform{});
     engine.addComponent(entity, Rigidbody{});
 	engine.addComponent(entity2, Transform{});
 
+    std::string tag = "test";
+    std::vector<GameEngine::EntityId> ids = engine.getEntitiesByTag(tag);
     double startTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     sf::Window window(sf::VideoMode(800, 600), "Game Engine");

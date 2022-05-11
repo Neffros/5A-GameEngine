@@ -14,8 +14,8 @@ Engine::Engine(double frameRate) : _clock(Clock()), _frameRate(frameRate), _fram
     this->_threadPool.Start();
 }
 
-EntityId Engine::createEntity() {
-    return this->_entityManager->createEntity();
+EntityId Engine::createEntity(const std::string& tag) {
+    return this->_entityManager->createEntity(tag);
 }
 
 void Engine::destroyEntity(const EntityId& id)
@@ -60,4 +60,8 @@ void Engine::stop()
 
 ThreadPool* Engine::threadPool() {
     return &_threadPool;
+}
+
+std::vector<EntityId> Engine::getEntitiesByTag(std::string &tag) {
+    return _entityManager->getEntitiesByTag(tag);
 }
