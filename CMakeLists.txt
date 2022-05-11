@@ -20,4 +20,4 @@ add_executable(${PROJECT_NAME}
     "headers/Engine.hpp"
     "headers/System.hpp"
     "headers/SystemManager.hpp"
-        headers/Clock.h headers/ThreadPool.h src/ThreadPool.cpp)
+        headers/Clock.h headers/ThreadPool.h src/ThreadPool.cpp headers/Transform.h src/Transform.cpp)

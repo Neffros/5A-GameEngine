@@ -1,12 +1,7 @@
 #include <chrono>
-#include <iostream>
 #include "windows.h"
 #include "include/ECS.h"
-
-struct Transform
-{
-	float position;
-};
+#include "headers/Transform.h"
 
 int main()
 {
