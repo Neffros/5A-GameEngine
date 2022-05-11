@@ -38,7 +38,7 @@ void Engine::tick() {
     if(deltaTime > _maxDelta)
         deltaTime = _maxDelta;
 
-    // todo systems update
+    // systems update here
 
     _clock.fixedDeltaTime += _clock.deltaTime;
     double accumulatedTime = _clock.fixedDeltaTime;
@@ -46,17 +46,20 @@ void Engine::tick() {
     while((accumulatedTime > _frameDuration) && loops > 0){
         accumulatedTime -= _frameDuration;
 
-        // todo systems fixedUpdate
+        // systems fixedUpdate here
+        this->_systemManager->run(this);
 
         --loops;
     }
-
-    this->_systemManager->run(this);
 }
 
 void Engine::stop()
 {
     this->_threadPool.Stop();
+}
+
+ThreadPool* Engine::threadPool() {
+    return &_threadPool;
 }
 
 std::vector<EntityId> Engine::getEntitiesByTag(std::string &tag) {

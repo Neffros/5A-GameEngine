@@ -1,6 +1,6 @@
 #include <chrono>
 #include <iostream>
-#include "windows.h"
+#include "SFML/Window.hpp"
 
 #include "include/ECS.h"
 #include "headers/Transform.h"
@@ -13,10 +13,10 @@ struct Rigidbody
 
 class MoveSystem : public GameEngine::System<Transform, Rigidbody>
 {
-	virtual void behaviour(const GameEngine::EntityId& id, Transform& transform, Rigidbody& rigidbody) const override
+	void behaviour(const GameEngine::EntityId& id, Transform& transform, Rigidbody& rigidbody) const override
 	{
-		transform.position += 2;
-		std::cout << id << std::endl;
+		transform.position[0] += 2;
+        std::cout << "Entity id : " << id << " ; Transform component : " << transform.toString() << std::endl;
 	}
 };
 
@@ -43,12 +43,17 @@ int main()
     std::vector<GameEngine::EntityId> ids = engine.getEntitiesByTag(tag);
     double startTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-    bool loop = true;
-
-    while(loop)
+    sf::Window window(sf::VideoMode(800, 600), "Game Engine");
+    while(window.isOpen())
     {
-        if(GetKeyState('A') & 0x8000)
-            loop = false;
+        // on traite tous les évènements de la fenêtre qui ont été générés depuis la dernière itération de la boucle
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            // fermeture de la fenêtre lorsque l'utilisateur le souhaite
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
 
         double currentTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 

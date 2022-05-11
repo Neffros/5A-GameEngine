@@ -78,5 +78,7 @@ namespace GameEngine {
         void tick();
 
         void stop();
+
+        ThreadPool* threadPool();
     };
 }
