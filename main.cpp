@@ -6,6 +6,8 @@
 #include "include/ECS.h"
 #include "headers/Transform.h"
 
+sf::RenderWindow* window;
+
 struct Rigidbody
 {
 	float velocity;
@@ -15,8 +17,24 @@ class MoveSystem : public GameEngine::System<Transform, Rigidbody>
 {
 	void behaviour(const GameEngine::EntityId& id, Transform& transform, Rigidbody& rigidbody) const override
 	{
-		transform.position[0] += 2;
+		transform.position[0] += 0.5;
         std::cout << "Entity id : " << id << " ; Transform component : " << transform.toString() << std::endl;
+	}
+};
+
+class RendererSystem : public GameEngine::System<Transform>{
+    void run(GameEngine::Engine* engine, const std::set<GameEngine::EntityId>& entities) const override{
+        auto& comps = engine->getComponents<Transform>();
+        for (const auto& id : entities) {
+            this->behaviour(id, comps[id]);
+        }
+    }
+    void behaviour(const GameEngine::EntityId& id, Transform& transform) const override
+	{
+        sf::CircleShape shape(10);
+        shape.setFillColor(sf::Color::White);
+        shape.setPosition(transform.position[0], transform.position[1]);
+        window->draw(shape);
 	}
 };
 
@@ -30,6 +48,7 @@ int main()
 	engine.registerComponent<Transform>();
 	engine.registerComponent<Rigidbody>();
 	engine.registerSystem<MoveSystem>();
+    engine.registerSystem<RendererSystem>();
 
 	auto entity = engine.createEntity("test");
 	auto entity2 = engine.createEntity("another");
@@ -43,7 +62,7 @@ int main()
     std::vector<GameEngine::EntityId> ids = engine.getEntitiesByTag(tag);
     double startTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Game Engine");
+    window = new sf::RenderWindow(sf::VideoMode(800, 600), "Game Engine");
     sf::Font font;
     if(!font.loadFromFile("resources/arial.ttf")){
         std::cerr << "Error loading font" << std::endl;
@@ -53,17 +72,17 @@ int main()
     fpsText.setFillColor(sf::Color::White);
     int secondFrameCount = 0;
     sf::Clock fpsClock;
-    while(window.isOpen())
+    while(window->isOpen())
     {
         // on traite tous les évènements de la fenêtre qui ont été générés depuis la dernière itération de la boucle
         sf::Event event;
-        while (window.pollEvent(event))
+        while (window->pollEvent(event))
         {
             // fermeture de la fenêtre lorsque l'utilisateur le souhaite
             if (event.type == sf::Event::Closed)
-                window.close();
+                window->close();
         }
-        window.clear(sf::Color::Black);
+        window->clear(sf::Color::Black);
 
         double currentTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 
@@ -80,9 +99,9 @@ int main()
             fpsClock.restart();
         }
 
-        window.draw(fpsText);
+        window->draw(fpsText);
 
-        window.display();
+        window->display();
     }
 
     engine.stop();

@@ -31,7 +31,7 @@ namespace GameEngine
 		{
 			return getComponentSignature<TComponents...>(engine);
 		}
-	private:
+	protected:
 		template <typename TComponent>
 		static TComponent& unpack(Engine* engine, const EntityId& id)
 		{
@@ -47,7 +47,6 @@ namespace GameEngine
 	protected:
 		virtual void behaviour(const EntityId& id, TComponents& ...components) const = 0;
 
-		// TODO : fournir la lambda à utiliser qui prend en paramètre entity et components
 		void forEach(Engine* engine, const std::set<EntityId>& entities, const std::function<void(const EntityId&, TComponents&...)>& job) const
 		{
 			std::vector<int> jobIds;
