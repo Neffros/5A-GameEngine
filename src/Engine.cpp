@@ -1,5 +1,4 @@
 #include "../headers/Engine.hpp"
-#include <iostream>
 
 constexpr double STANDARD_FRAMERATE = 60;
 constexpr double EXPECTED_MAX_DELTA = 0.1;
@@ -11,7 +10,14 @@ Engine::Engine(double frameRate) : _clock(Clock()), _frameRate(frameRate), _fram
     this->_componentManager = std::make_unique<ComponentManager>();
     this->_entityManager = std::make_unique<EntityManager>();
     this->_systemManager = std::make_unique<SystemManager>();
-    this->_threadPool.Start();
+    this->_threadPool = std::make_unique<ThreadPool>();
+
+    this->_threadPool->start();
+
+    this->onComponentAddedToEntity.bind<SystemManager, &SystemManager::onComponentAddedToEntity>(this->_systemManager.get());
+    this->onComponentRemovedFromEntity.bind<SystemManager, &SystemManager::onComponentRemovedFromEntity>(this->_systemManager.get());
+    this->onEntityDestroyed.bind<ComponentManager, &ComponentManager::onEntityDestroyed>(this->_componentManager.get());
+    this->onEntityDestroyed.bind<SystemManager, &SystemManager::onEntityDestroyed>(this->_systemManager.get());
 }
 
 EntityId Engine::createEntity() {
@@ -22,9 +28,13 @@ void Engine::destroyEntity(const EntityId& id)
 {
     const ComponentSignature& signature = this->_entityManager->getSignature(id);
 
-    this->_componentManager->onEntityDestroyed(id, signature);
     this->_entityManager->destroyEntity(id);
-    this->_systemManager->onEntityDestroyed(id, signature);
+    this->onEntityDestroyed.invoke(id, signature);
+}
+
+ThreadPool* Engine::getThreadPool()
+{
+    return this->_threadPool.get();
 }
 
 void Engine::tick() {
@@ -55,9 +65,5 @@ void Engine::tick() {
 
 void Engine::stop()
 {
-    this->_threadPool.Stop();
-}
-
-ThreadPool* Engine::threadPool() {
-    return &_threadPool;
+    this->_threadPool->stop();
 }

@@ -21,16 +21,16 @@ namespace GameEngine {
 
     class ThreadPool {
     public:
-        int QueueJob(const std::function<void()> &job);
+        int queueJob(const std::function<void()> &job);
 
-        void Start();
+        void start();
 
-        void Stop();
+        void stop();
 
-        void WaitForJob(int jobId);
+        void waitForJob(int jobId);
 
     private:
-        void ThreadLoop();
+        void threadLoop();
 
         std::map<int, bool> _idToStatus;
         std::queue<Job> _jobs;

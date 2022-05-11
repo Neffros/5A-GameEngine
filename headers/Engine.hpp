@@ -3,11 +3,19 @@
 #include "Clock.h"
 #include "ComponentManager.hpp"
 #include "EntityManager.h"
+#include "MultiDelegate.hpp"
 #include "SystemManager.hpp"
 #include "ThreadPool.h"
 
 namespace GameEngine {
-    class Engine
+	struct EngineEvents
+	{
+		MultiDelegate<void(const EntityId&, const ComponentSignature&, const ComponentSignature&)> onComponentAddedToEntity;
+		MultiDelegate<void(const EntityId&, const ComponentSignature&, const ComponentSignature&)> onComponentRemovedFromEntity;
+		MultiDelegate<void(const EntityId&, const ComponentSignature&)> onEntityDestroyed;
+	};
+
+    class Engine : EngineEvents
     {
     private:
 		Clock _clock;
@@ -17,7 +25,7 @@ namespace GameEngine {
         std::unique_ptr<EntityManager> _entityManager;
 		double _maxDelta;
         std::unique_ptr<SystemManager> _systemManager;
-		ThreadPool _threadPool;
+		std::unique_ptr<ThreadPool> _threadPool;
     public:
         explicit Engine(double frameRate);
 
@@ -30,7 +38,7 @@ namespace GameEngine {
 
 			newSignature.set(componentId, true);
 			this->_entityManager->setSignature(id, newSignature);
-			this->_systemManager->onComponentAddedToEntity(id, oldSignature, newSignature);
+			this->onComponentAddedToEntity.invoke(id, oldSignature, newSignature);
 		}
 
 		EntityId createEntity();
@@ -48,6 +56,8 @@ namespace GameEngine {
 		{
 			return this->_componentManager->getComponentId<TComponent>();
 		}
+
+        ThreadPool* getThreadPool();
 
 		template<typename TComponent>
 		void registerComponent()
@@ -70,13 +80,11 @@ namespace GameEngine {
 
 			newSignature.set(componentId, false);
 			this->_entityManager->setSignature(id, newSignature);
-			this->_systemManager->onComponentRemovedToEntity(id, oldSignature, newSignature);
+			this->onComponentRemovedFromEntity.invoke(id, oldSignature, newSignature);
 		}
 
         void tick();
 
         void stop();
-
-        ThreadPool* threadPool();
     };
 }

@@ -3,8 +3,8 @@
 
 using namespace GameEngine;
 
-int ThreadPool::QueueJob(const std::function<void()> &job) {
-    std::cerr << "Queued new job with id " << _lastJobId << std::endl;
+int ThreadPool::queueJob(const std::function<void()> &job)
+{
     {
         std::unique_lock<std::mutex> lock(_queueMutex);
         _idToStatus[_lastJobId] = false;
@@ -14,16 +14,17 @@ int ThreadPool::QueueJob(const std::function<void()> &job) {
     return _lastJobId++;
 }
 
-void ThreadPool::Start() {
+void ThreadPool::start()
+{
     _lastJobId = 0;
     const unsigned int nThreads = std::thread::hardware_concurrency();
     _threads.resize(nThreads);
     for (int i = 0; i < nThreads; ++i) {
-        _threads.at(i) = std::thread(&ThreadPool::ThreadLoop, this);
+        _threads.at(i) = std::thread(&ThreadPool::threadLoop, this);
     }
 }
 
-void ThreadPool::Stop() {
+void ThreadPool::stop() {
     {
         std::unique_lock<std::mutex> lock(_queueMutex);
         _shouldTerminate = true;
@@ -35,8 +36,9 @@ void ThreadPool::Stop() {
     _threads.clear();
 }
 
-void ThreadPool::ThreadLoop() {
-    while (true) {
+void ThreadPool::threadLoop() {
+    while (true)
+    {
         Job job;
         {
             std::unique_lock<std::mutex> lock(_queueMutex);
@@ -54,8 +56,7 @@ void ThreadPool::ThreadLoop() {
     }
 }
 
-void ThreadPool::WaitForJob(int jobId) {
-    while(!_idToStatus[jobId]) {
-        std::cerr << "Waiting for job " << jobId << std::endl;
-    };
+void ThreadPool::waitForJob(int jobId)
+{
+    while(!_idToStatus[jobId]);
 }

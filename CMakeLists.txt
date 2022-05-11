@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
     "headers/ComponentCollection.hpp"
     "headers/ComponentManager.hpp"
     "headers/Engine.hpp"
+    "headers/MultiDelegate.hpp"
     "headers/System.hpp"
     "headers/SystemManager.hpp"
 )

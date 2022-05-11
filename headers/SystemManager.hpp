@@ -24,7 +24,7 @@ namespace GameEngine
     public:
         void onComponentAddedToEntity(const EntityId& id, const ComponentSignature& oldSignature, const ComponentSignature& newSignature);
 
-        void onComponentRemovedToEntity(const EntityId& id, const ComponentSignature& oldSignature, const ComponentSignature& newSignature);
+        void onComponentRemovedFromEntity(const EntityId& id, const ComponentSignature& oldSignature, const ComponentSignature& newSignature);
 
         void onEntityDestroyed(const EntityId& id, const ComponentSignature& signature);
 

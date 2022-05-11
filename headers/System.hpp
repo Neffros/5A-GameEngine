@@ -40,18 +40,26 @@ namespace GameEngine
 	public:
 		void run(Engine* engine, const std::set<EntityId>& entities) const override
 		{
-            std::vector<int> runningThreads;
-			for (const auto& id : entities) {
-                runningThreads.push_back(engine->threadPool()->QueueJob([this, id, engine] {
-                    this->behaviour(id, unpack<TComponents>(engine, id)...);
-                }));
-            }
-            // wait for all
-            for(int i = runningThreads.size()-1; i >= 0; --i){
-                engine->threadPool()->WaitForJob(runningThreads[i]);
-            }
+			this->forEach(engine, entities);
 		}
 	protected:
 		virtual void behaviour(const EntityId& id, TComponents& ...components) const = 0;
+
+		// TODO : fournir la lambda à utiliser qui prend en paramètre entity et components
+		void forEach(Engine* engine, const std::set<EntityId>& entities) const
+		{
+			std::vector<int> jobIds;
+
+			for (const auto& id : entities) {
+				const auto jobId = engine->getThreadPool()->queueJob([this, id, engine] {
+					this->behaviour(id, unpack<TComponents>(engine, id)...);
+				});
+
+				jobIds.push_back(jobId);
+			}
+
+			for (const auto& jobId : jobIds)
+				engine->getThreadPool()->waitForJob(jobId);
+		}
 	};
 }

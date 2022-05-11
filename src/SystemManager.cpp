@@ -11,19 +11,19 @@ void SystemManager::onComponentAddedToEntity(const EntityId& id, const Component
 	}
 }
 
-void SystemManager::onComponentRemovedToEntity(const EntityId& id, const ComponentSignature& oldSignature, const ComponentSignature& newSignature)
+void SystemManager::onComponentRemovedFromEntity(const EntityId& id, const ComponentSignature& oldSignature, const ComponentSignature& newSignature)
 {
 	for (auto& [signature, group] : this->_signatureToGroup)
 	{
 		if ((oldSignature & signature) == signature && (newSignature & signature) != signature)
 			group.entities.erase(id);
 	}
-
 }
 
 void SystemManager::onEntityDestroyed(const EntityId& id, const ComponentSignature& signature)
 {
-	this->_signatureToGroup[signature].entities.erase(id);
+	if (this->_signatureToGroup.contains(signature))
+		this->_signatureToGroup[signature].entities.erase(id);
 }
 
 void SystemManager::run(Engine* engine) const
