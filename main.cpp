@@ -1,10 +1,10 @@
 #include <chrono>
 #include <iostream>
 #include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
 
 #include "include/ECS.h"
 #include "headers/Transform.h"
-#include "headers/Scene.h"
 
 struct Rigidbody
 {
@@ -43,7 +43,14 @@ int main()
     std::vector<GameEngine::EntityId> ids = engine.getEntitiesByTag(tag);
     double startTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-    sf::Window window(sf::VideoMode(800, 600), "Game Engine");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Game Engine");
+    sf::Font font;
+    if(!font.loadFromFile("resources/arial.ttf")){
+        std::cerr << "Error loading font" << std::endl;
+    }
+    sf::Text fpsText;
+    fpsText.setFont(font);
+    fpsText.setFillColor(sf::Color::White);
     while(window.isOpen())
     {
         // on traite tous les évènements de la fenêtre qui ont été générés depuis la dernière itération de la boucle
@@ -54,6 +61,7 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+        window.clear(sf::Color::Black);
 
         double currentTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 
@@ -62,6 +70,11 @@ int main()
 
         engine.tick();
         startTime = currentTime;
+        fpsText.setString("60");
+
+        window.draw(fpsText);
+
+        window.display();
     }
 
     engine.stop();

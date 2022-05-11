@@ -32,8 +32,6 @@ add_executable(${PROJECT_NAME}
     "headers/ComponentManager.hpp"
     "headers/Engine.hpp"
     "headers/System.hpp"
-    "headers/SystemManager.hpp"
-    "headers/Scene.h"
-        src/Scene.cpp)
+    "headers/SystemManager.hpp")
 
 target_link_libraries(${PROJECT_NAME} sfml-system sfml-window sfml-graphics)
