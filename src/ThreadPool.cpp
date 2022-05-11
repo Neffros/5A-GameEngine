@@ -4,6 +4,7 @@
 using namespace GameEngine;
 
 int ThreadPool::QueueJob(const std::function<void()> &job) {
+    if(_lastJobId == INT_MAX) _lastJobId = 0;
     std::cerr << "Queued new job with id " << _lastJobId << std::endl;
     {
         std::unique_lock<std::mutex> lock(_queueMutex);

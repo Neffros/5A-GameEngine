@@ -50,7 +50,7 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        
+
         double currentTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 
         if(currentTime - startTime < frameDuration)
