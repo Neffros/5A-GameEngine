@@ -3,18 +3,23 @@
 #include "../headers/ComponentManager.hpp"
 #include "../headers/EntityManager.h"
 #include "../headers/SystemManager.hpp"
+#include "Clock.h"
+#include "ThreadPool.h"
 
-namespace GameEngine
-{
-	class Engine
-	{
-	private:
-		std::unique_ptr<ComponentManager> _componentManager;
-		double _frameRate;
-		std::unique_ptr<EntityManager> _entityManager;
-		std::unique_ptr<SystemManager> _systemManager;
-	public:
-		Engine();
+namespace GameEngine {
+    class Engine
+    {
+    private:
+		Clock _clock;
+        std::unique_ptr<ComponentManager> _componentManager;
+        double _frameRate;
+		double _frameDuration;
+        std::unique_ptr<EntityManager> _entityManager;
+		double _maxDelta;
+        std::unique_ptr<SystemManager> _systemManager;
+		ThreadPool _threadPool;
+    public:
+        explicit Engine(double frameRate);
 
 		template <typename TComponent>
 		void addComponent(const EntityId& id, TComponent component)
@@ -68,6 +73,8 @@ namespace GameEngine
 			this->_systemManager->onComponentRemovedToEntity(id, oldSignature, newSignature);
 		}
 
-		void tick();
-	};
+        void tick();
+
+        void stop();
+    };
 }
