@@ -6,10 +6,11 @@
 
 #include "global.h"
 #include "ISystem.h"
-#include "System.hpp"
 
 namespace GameEngine
 {
+    class Engine;
+
     struct SignatureGroup
     {
         std::set<EntityId> entities;
@@ -38,7 +39,7 @@ namespace GameEngine
             this->push(signature, system);
         }
 
-        void run(ComponentManager* componentManager) const;
+        void run(Engine* engine) const;
     private:
         void push(const ComponentSignature& signature, std::shared_ptr<ISystem> system)
         {

@@ -7,8 +7,10 @@
 
 namespace GameEngine
 {
+    class Engine;
+
     struct ISystem
     {
-        virtual void run(const ComponentManager* componentManager, const std::set<EntityId>& entities) const = 0;
+        virtual void run(Engine* engine, const std::set<EntityId>& entities) const = 0;
     };
 }

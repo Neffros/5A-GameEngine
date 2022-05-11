@@ -16,7 +16,7 @@ add_executable(${PROJECT_NAME}
     "src/EntityManager.cpp"
     "src/SystemManager.cpp"
     "src/ThreadPool.cpp"
-    "src/Transform.cpp""
+    "src/Transform.cpp"
     
     "headers/ComponentCollection.hpp"
     "headers/ComponentManager.hpp"

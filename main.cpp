@@ -1,5 +1,7 @@
 #include <chrono>
+#include <iostream>
 #include "windows.h"
+
 #include "include/ECS.h"
 #include "headers/Transform.h"
 
@@ -13,7 +15,7 @@ class MoveSystem : public GameEngine::System<Transform, Rigidbody>
 	virtual void behaviour(const GameEngine::EntityId& id, Transform& transform, Rigidbody& rigidbody) const override
 	{
 		transform.position += 2;
-		std::cout << transform.position << std::endl;
+		std::cout << id << std::endl;
 	}
 };
 
@@ -21,6 +23,7 @@ int main()
 {
     double frameRate = 60.0;
     double frameDuration = 1.0 / frameRate;
+
 	GameEngine::Engine engine(frameRate);
 
 	engine.registerComponent<Transform>();
@@ -31,6 +34,7 @@ int main()
 	auto entity2 = engine.createEntity();
 
 	engine.addComponent(entity, Transform{});
+    engine.addComponent(entity, Rigidbody{});
 	engine.addComponent(entity2, Transform{});
 
     double startTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();

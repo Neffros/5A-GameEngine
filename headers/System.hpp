@@ -2,22 +2,23 @@
 
 #include <tuple>
 
+#include "Engine.hpp"
 #include "ISystem.h"
 
 namespace GameEngine
 {
 	template<typename TComponent>
-	ComponentSignature getComponentSignature(const ComponentManager* componentManager)
+	ComponentSignature getComponentSignature(const Engine* engine)
 	{
-		return ComponentSignature().set(componentManager->getComponentId<TComponent>(), true);
+		return ComponentSignature().set(engine->getComponentId<TComponent>(), true);
 	}
 
 	template<typename TComponent, typename TSecondComponent, typename... TComponents>
-	ComponentSignature getComponentSignature(const ComponentManager* componentManager)
+	ComponentSignature getComponentSignature(const Engine* engine)
 	{
 		ComponentSignature signature;
-		signature.set(componentManager->getComponentId<TComponent>(), true);
-		signature |= getComponentSignature<TSecondComponent, TComponents...>(componentManager);
+		signature.set(engine->getComponentId<TComponent>(), true);
+		signature |= getComponentSignature<TSecondComponent, TComponents...>(engine);
 
 		return signature;
 	}
@@ -26,23 +27,21 @@ namespace GameEngine
 	class System : public ISystem
 	{
 	public:
-		static ComponentSignature getSignature(const ComponentManager* componentManager)
+		static ComponentSignature getSignature(const Engine* engine)
 		{
-			return getComponentSignature<TComponents...>(componentManager);
+			return getComponentSignature<TComponents...>(engine);
 		}
 	private:
 		template <typename TComponent>
-		static TComponent& unpack(const ComponentManager* componentManager, const EntityId& id)
+		static TComponent& unpack(Engine* engine, const EntityId& id)
 		{
-			return componentManager->getComponentOfEntity<TComponent>(id);
+			return engine->getComponent<TComponent>(id);
 		}
 	public:
-		virtual void run(const ComponentManager* componentManager, const std::set<EntityId>& entities) const override
+		virtual void run(Engine* engine, const std::set<EntityId>& entities) const override
 		{
 			for (const auto& id : entities)
-			{
-				this->behaviour(id, unpack<TComponents>(componentManager, id)...);
-			}
+				this->behaviour(id, unpack<TComponents>(engine, id)...);
 		}
 	protected:
 		virtual void behaviour(const EntityId& id, TComponents& ...components) const = 0;

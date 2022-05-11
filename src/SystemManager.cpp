@@ -6,7 +6,7 @@ void SystemManager::onComponentAddedToEntity(const EntityId& id, const Component
 {
 	for (auto& [signature, group] : this->_signatureToGroup)
 	{
-		if ((oldSignature & signature) == 0 && (newSignature & signature) != 0)
+		if ((oldSignature & signature) != signature && (newSignature & signature) == signature)
 			group.entities.insert(id);
 	}
 }
@@ -15,7 +15,7 @@ void SystemManager::onComponentRemovedToEntity(const EntityId& id, const Compone
 {
 	for (auto& [signature, group] : this->_signatureToGroup)
 	{
-		if ((oldSignature & signature) != 0 && (newSignature & signature) == 0)
+		if ((oldSignature & signature) == signature && (newSignature & signature) != signature)
 			group.entities.erase(id);
 	}
 
@@ -26,11 +26,11 @@ void SystemManager::onEntityDestroyed(const EntityId& id, const ComponentSignatu
 	this->_signatureToGroup[signature].entities.erase(id);
 }
 
-void SystemManager::run(ComponentManager* componentManager) const
+void SystemManager::run(Engine* engine) const
 {
 	for (const auto& [_, group] : this->_signatureToGroup)
 	{
 		for (const auto& system : group.systems)
-			system->run(componentManager, group.entities);
+			system->run(engine, group.entities);
 	}
 }

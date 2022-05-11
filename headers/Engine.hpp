@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../headers/ComponentManager.hpp"
-#include "../headers/EntityManager.h"
-#include "../headers/SystemManager.hpp"
 #include "Clock.h"
+#include "ComponentManager.hpp"
+#include "EntityManager.h"
+#include "SystemManager.hpp"
 #include "ThreadPool.h"
 
 namespace GameEngine {
@@ -44,7 +44,7 @@ namespace GameEngine {
 		}
 
 		template <typename TComponent>
-		ComponentId getComponentId()
+		ComponentId getComponentId() const
 		{
 			return this->_componentManager->getComponentId<TComponent>();
 		}
@@ -58,7 +58,7 @@ namespace GameEngine {
 		template<typename TSystem>
 		void registerSystem()
 		{
-			this->_systemManager->registerSystem<TSystem>(TSystem::getSignature(this->_componentManager.get()));
+			this->_systemManager->registerSystem<TSystem>(TSystem::getSignature(this));
 		}
 
 		template<typename TComponent>

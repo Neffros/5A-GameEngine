@@ -51,7 +51,7 @@ void Engine::tick() {
         --loops;
     }
 
-    this->_systemManager->run(this->_componentManager.get());
+    this->_systemManager->run(this);
 }
 
 void Engine::stop()
