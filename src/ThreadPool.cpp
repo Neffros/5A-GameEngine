@@ -5,13 +5,20 @@ using namespace GameEngine;
 
 int ThreadPool::queueJob(const std::function<void()> &job)
 {
+    int jobId;
     {
         std::unique_lock<std::mutex> lock(_queueMutex);
-        _idToStatus[_lastJobId] = false;
-        _jobs.push(Job(_lastJobId, job));
+        if (_lastJobId == INT_MAX)
+            _lastJobId = 0;
+        
+        jobId = this->_lastJobId;
+
+        _idToStatus[jobId] = false;
+        _jobs.push(Job(jobId, job));
+        ++this->_lastJobId;
     }
     _mutexCondition.notify_one();
-    return _lastJobId++;
+    return jobId;
 }
 
 void ThreadPool::start()

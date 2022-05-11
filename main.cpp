@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
-#include "windows.h"
+#include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
 
 #include "include/ECS.h"
 #include "headers/Transform.h"
@@ -30,21 +31,39 @@ int main()
 	engine.registerComponent<Rigidbody>();
 	engine.registerSystem<MoveSystem>();
 
-	auto entity = engine.createEntity();
-	auto entity2 = engine.createEntity();
+	auto entity = engine.createEntity("test");
+	auto entity2 = engine.createEntity("another");
+    auto entity3 = engine.createEntity("test");
 
 	engine.addComponent(entity, Transform{});
     engine.addComponent(entity, Rigidbody{});
 	engine.addComponent(entity2, Transform{});
 
+    std::string tag = "test";
+    std::vector<GameEngine::EntityId> ids = engine.getEntitiesByTag(tag);
     double startTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-    bool loop = true;
-
-    while(loop)
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Game Engine");
+    sf::Font font;
+    if(!font.loadFromFile("resources/arial.ttf")){
+        std::cerr << "Error loading font" << std::endl;
+    }
+    sf::Text fpsText;
+    fpsText.setFont(font);
+    fpsText.setFillColor(sf::Color::White);
+    int secondFrameCount = 0;
+    sf::Clock fpsClock;
+    while(window.isOpen())
     {
-        if(GetKeyState('A') & 0x8000)
-            loop = false;
+        // on traite tous les évènements de la fenêtre qui ont été générés depuis la dernière itération de la boucle
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            // fermeture de la fenêtre lorsque l'utilisateur le souhaite
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        window.clear(sf::Color::Black);
 
         double currentTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 
@@ -53,6 +72,17 @@ int main()
 
         engine.tick();
         startTime = currentTime;
+        sf::Time elapsed = fpsClock.getElapsedTime();
+        ++secondFrameCount;
+        if(elapsed.asSeconds() > 1){
+            fpsText.setString("FPS: " + std::to_string(secondFrameCount));
+            secondFrameCount = 0;
+            fpsClock.restart();
+        }
+
+        window.draw(fpsText);
+
+        window.display();
     }
 
     engine.stop();

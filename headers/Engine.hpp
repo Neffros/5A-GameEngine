@@ -41,7 +41,9 @@ namespace GameEngine {
 			this->onComponentAddedToEntity.invoke(id, oldSignature, newSignature);
 		}
 
-		EntityId createEntity();
+		EntityId createEntity(const std::string& tag = "");
+
+        std::vector<EntityId> getEntitiesByTag(std::string& tag);
 
 		void destroyEntity(const EntityId& id);
 
